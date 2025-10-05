@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter\Database;
 
-use Nece\Framework\Adapter\Contract\DataaBase\IModel;
+use Nece\Framework\Adapter\Contract\DataBase\IModel;
 use think\Model as ThinkModel;
 
 class Model extends ThinkModel implements IModel
