@@ -4,7 +4,7 @@ namespace Nece\Framework\Adapter;
 
 use app\BaseController;
 use Nece\Framework\Adapter\Contract\IController;
-use Nece\Framework\Adapter\Facades\Session;
+use Nece\Framework\Adapter\Facade\Session;
 use Nece\Gears\ResponseData;
 use think\facade\View;
 use think\Request;
