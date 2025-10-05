@@ -4,7 +4,7 @@ namespace Nece\Framework\Adapter;
 
 use app\BaseController;
 use Nece\Framework\Adapter\Contract\IController;
-use Nece\Framework\Adapter\Facades\Cache;
+use Nece\Framework\Adapter\Facades\Session;
 use Nece\Gears\ResponseData;
 use think\facade\View;
 use think\Request;
@@ -100,9 +100,9 @@ abstract class Controller extends BaseController implements IController
             return json($data, $data['http_status']);
         } else {
             if ($result instanceof Throwable) {
-                Cache::set('error_message', $result->getMessage());
+                Session::set('error_message', $result->getMessage());
             } else {
-                Cache::set('redirect_data', $result);
+                Session::set('redirect_data', $result);
             }
             return redirect($url, $code);
         }
