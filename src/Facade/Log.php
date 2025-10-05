@@ -1,6 +1,6 @@
 <?php
 
-namespace Nece\Framework\Adapter\Facades;
+namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\ILog;
 use think\facade\Log as FacadeLog;

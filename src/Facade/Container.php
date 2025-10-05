@@ -1,6 +1,6 @@
 <?php
 
-namespace Nece\Framework\Adapter\Facades;
+namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\IContainer;
 use think\Container as TpContainer;
