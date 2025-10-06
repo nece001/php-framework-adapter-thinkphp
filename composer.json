@@ -16,5 +16,12 @@
     ],
     "require": {
         "php": ">=7.2"
+    },
+    "extra": {
+        "think": {
+            "providers": [
+                "Nece\\Framework\\Adapter\\ThinkPhpServiceProvider"
+            ]
+        }
     }
 }

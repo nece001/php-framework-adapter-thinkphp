@@ -1,6 +1,6 @@
 <?php
 
-namespace Nece\Gears\Infrastructure;
+namespace Nece\Framework\Adapter;
 
 use Closure;
 use Nece\Framework\Adapter\Contract\IServiceProvider;
