@@ -19,7 +19,7 @@
     },
     "extra": {
         "think": {
-            "providers": [
+            "services": [
                 "Nece\\Framework\\Adapter\\ThinkPhpServiceProvider"
             ]
         }
