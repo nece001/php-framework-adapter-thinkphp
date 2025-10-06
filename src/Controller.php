@@ -5,6 +5,7 @@ namespace Nece\Framework\Adapter;
 use app\BaseController;
 use Nece\Framework\Adapter\Contract\IController;
 use Nece\Framework\Adapter\Facade\Session;
+use Nece\Framework\Adapter\Response as AdapterResponse;
 use Nece\Gears\ResponseData;
 use think\facade\View;
 use think\Request;
@@ -67,18 +68,14 @@ abstract class Controller extends BaseController implements IController
     /**
      * 渲染视图
      * 
-     * @param string $view 视图路径
+     * @param string $template 模板路径
      * @param array $data 视图数据
      * @return Response
      */
-    public function renderView(string $view, $data)
+    public function renderView(string $template, $data)
     {
-        if ($this->isJsonRequest()) {
-            $data = ResponseData::success($data);
-            return json($data, $data['http_status']);
-        } else {
-            return View::fetch($view, $data);
-        }
+        $response = new AdapterResponse($this->getRequest()->is_json_request);
+        return $response->view($template, $data);
     }
 
     /**
@@ -91,20 +88,7 @@ abstract class Controller extends BaseController implements IController
      */
     public function redirectTo(string $url, $result, int $code = 302)
     {
-        if ($this->isJsonRequest()) {
-            if ($result instanceof Throwable) {
-                $data = ResponseData::exception($result);
-            } else {
-                $data = ResponseData::success($result);
-            }
-            return json($data, $data['http_status']);
-        } else {
-            if ($result instanceof Throwable) {
-                Session::set('error_message', $result->getMessage());
-            } else {
-                Session::set('redirect_data', $result);
-            }
-            return redirect($url, $code);
-        }
+        $response = new AdapterResponse($this->getRequest()->is_json_request);
+        return $response->redirect($url, $result, $code);
     }
 }
