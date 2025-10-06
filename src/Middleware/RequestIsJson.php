@@ -1,6 +1,6 @@
 <?php
 
-namespace Nece\Framework\Adapter;
+namespace Nece\Framework\Adapter\Middleware;
 
 use Closure;
 use Nece\Framework\Adapter\Contract\IMiddleware;

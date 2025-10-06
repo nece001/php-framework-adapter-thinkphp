@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter;
 
-use Nece\Framework\Adapter\RequestIsJson;
+use Nece\Framework\Adapter\Middleware\RequestIsJson;
 
 class ThinkPhpServiceProvider extends ServiceProvider
 {
