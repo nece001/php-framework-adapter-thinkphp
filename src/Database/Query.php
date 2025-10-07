@@ -5,23 +5,25 @@ namespace Nece\Framework\Adapter\Database;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Gears\Dto;
 use Nece\Gears\PagingCollection;
+use Nece\Gears\PagingVar;
 use think\db\Query as ThinkQuery;
 
 class Query extends ThinkQuery implements IQuery
 {
     /**
-     * 分页查询
+     * 按分页查询
      *
      * @author nece001@163.com
      * @create 2025-09-14 13:27:17
      *
-     * @param int $page
-     * @param int $size
      * @return PagingCollection
      */
-    public function toPaginate(int $page = 1, int $size = 15): PagingCollection
+    public function paging(PagingVar $paging): PagingCollection
     {
-        $list = new PagingCollection([], 0, $page, $size);
+        $page = $paging->getPage();
+        $size = $paging->getPageSize();
+
+        $list = new PagingCollection([], 0, $page, $size, $paging->getPageVarName(), $paging->getPageSizeVarName());
         $items = $this->paginate(array('page' => $page, 'list_rows' => $size));
         if ($items) {
             $list->setTotal($items->total());
@@ -32,6 +34,26 @@ class Query extends ThinkQuery implements IQuery
             }
         }
 
+        return $list;
+    }
+
+    /**
+     * 查询所有
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 10:24:54
+     *
+     * @return array
+     */
+    public function all(): array
+    {
+        $list = array();
+        $items = $this->select();
+        if ($items) {
+            foreach ($items as $item) {
+                $list[] = new Dto($item->toArray());
+            }
+        }
         return $list;
     }
 }

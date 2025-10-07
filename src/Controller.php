@@ -4,13 +4,10 @@ namespace Nece\Framework\Adapter;
 
 use app\BaseController;
 use Nece\Framework\Adapter\Contract\IController;
-use Nece\Framework\Adapter\Facade\Session;
 use Nece\Framework\Adapter\Response as AdapterResponse;
-use Nece\Gears\ResponseData;
-use think\facade\View;
+use Nece\Gears\PagingVar;
 use think\Request;
 use think\Response;
-use Throwable;
 
 /**
  * 控制器基类
@@ -24,6 +21,20 @@ use Throwable;
 abstract class Controller extends BaseController implements IController
 {
     /**
+     * 分页参数名
+     *
+     * @var string
+     */
+    protected $page_var_name = 'page';
+
+    /**
+     * 每页项目数量参数名
+     *
+     * @var string
+     */
+    protected $page_size_var_name = 'page_size';
+
+    /**
      * 获取当前请求
      * 
      * @return Request
@@ -31,6 +42,22 @@ abstract class Controller extends BaseController implements IController
     public function getRequest()
     {
         return $this->request;
+    }
+
+    /**
+     * 获取分页参数
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 10:20:55
+     *
+     * @return PagingVar
+     */
+    public function getPagingVar()
+    {
+        $page = $this->request->param($this->page_var_name, 1);
+        $page_size = $this->request->param($this->page_size_var_name, 20);
+
+        return new PagingVar($page, $page_size, $this->page_var_name, $this->page_size_var_name);
     }
 
     /**
