@@ -3,7 +3,7 @@
 namespace Nece\Framework\Adapter\Database;
 
 use Closure;
-use Nece\Framework\Adapter\Contract\Dateabase\IDbManater;
+use Nece\Framework\Adapter\Contract\Database\IDbManater;
 use think\facade\Db as FacadeDb;
 
 /**
