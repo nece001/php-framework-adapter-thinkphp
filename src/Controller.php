@@ -34,22 +34,6 @@ abstract class Controller extends BaseController implements IController
     }
 
     /**
-     * 是否为JSON请求
-     * 
-     * @return bool
-     */
-    public function isJsonRequest(): bool
-    {
-        if ($this->request->isJson()) {
-            // 需要设置HTTP请求头的Accept为application/json
-            return true;
-        } else {
-            return $this->request->contentType() == 'application/json';
-        }
-        return false;
-    }
-
-    /**
      * 获取请求参数
      *
      * @author nece001@163.com
