@@ -22,7 +22,7 @@ class Db implements IDbManater
      * @param string $as 别名
      * @return QueryBuilder
      */
-    public function table($table, $as = null)
+    public static function table($table, $as = null)
     {
         return FacadeDb::table($table, $as);
     }
@@ -33,9 +33,100 @@ class Db implements IDbManater
      * @param  mixed  $value
      * @return Expression
      */
-    public function raw($value)
+    public static function raw($value)
     {
         return FacadeDb::raw($value);
+    }
+
+    /**
+     * 原始函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:04:25
+     *
+     * @param string $func 函数名
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawFunc(string $func, string $field, string $alias)
+    {
+        return self::raw("{$func}({$field}) as {$alias}");
+    }
+
+    /**
+     * 计数函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:04:43
+     *
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawCount(string $field, string $alias)
+    {
+        return self::rawFunc('count', $field, $alias);
+    }
+
+    /**
+     * 求和函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:04:52
+     *
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawSum(string $field, string $alias)
+    {
+        return self::rawFunc('sum', $field, $alias);
+    }
+
+    /**
+     * 平均值函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:05:01
+     *
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawAvg(string $field, string $alias)
+    {
+        return self::rawFunc('avg', $field, $alias);
+    }
+
+    /**
+     * 最小值函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:05:10
+     *
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawMin(string $field, string $alias)
+    {
+        return self::rawFunc('min', $field, $alias);
+    }
+
+    /**
+     * 最大值函数表达式
+     *
+     * @author nece001@163.com
+     * @create 2025-10-07 23:05:19
+     *
+     * @param string $field 字段名
+     * @param string $alias 别名
+     * @return Expression
+     */
+    public static function rawMax(string $field, string $alias)
+    {
+        return self::rawFunc('max', $field, $alias);
     }
 
     /**
@@ -46,7 +137,7 @@ class Db implements IDbManater
      * @param  bool  $useReadPdo
      * @return mixed
      */
-    public function selectOne($query, $bindings = [], $useReadPdo = true)
+    public static function selectOne($query, $bindings = [], $useReadPdo = true)
     {
         return FacadeDb::selectOne($query, $bindings, $useReadPdo);
     }
@@ -61,7 +152,7 @@ class Db implements IDbManater
      *
      * @throws RuntimeException
      */
-    public function scalar($query, $bindings = [], $useReadPdo = true)
+    public static function scalar($query, $bindings = [], $useReadPdo = true)
     {
         return FacadeDb::scalar($query, $bindings, $useReadPdo);
     }
@@ -74,7 +165,7 @@ class Db implements IDbManater
      * @param  bool  $useReadPdo
      * @return array
      */
-    public function select($query, $bindings = [], $useReadPdo = true)
+    public static function select($query, $bindings = [], $useReadPdo = true)
     {
         return FacadeDb::select($query, $bindings, $useReadPdo);
     }
@@ -87,7 +178,7 @@ class Db implements IDbManater
      * @param  bool  $useReadPdo
      * @return \Generator
      */
-    public function cursor($query, $bindings = [], $useReadPdo = true)
+    public static function cursor($query, $bindings = [], $useReadPdo = true)
     {
         return FacadeDb::cursor($query, $bindings, $useReadPdo);
     }
@@ -99,7 +190,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return bool
      */
-    public function insert($query, $bindings = [])
+    public static function insert($query, $bindings = [])
     {
         return FacadeDb::insert($query, $bindings);
     }
@@ -111,7 +202,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return int
      */
-    public function update($query, $bindings = [])
+    public static function update($query, $bindings = [])
     {
         return FacadeDb::update($query, $bindings);
     }
@@ -123,7 +214,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return int
      */
-    public function delete($query, $bindings = [])
+    public static function delete($query, $bindings = [])
     {
         return FacadeDb::delete($query, $bindings);
     }
@@ -135,7 +226,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return bool
      */
-    public function statement($query, $bindings = [])
+    public static function statement($query, $bindings = [])
     {
         return FacadeDb::statement($query, $bindings);
     }
@@ -147,7 +238,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return int
      */
-    public function affectingStatement($query, $bindings = [])
+    public static function affectingStatement($query, $bindings = [])
     {
         return FacadeDb::affectingStatement($query, $bindings);
     }
@@ -158,7 +249,7 @@ class Db implements IDbManater
      * @param  string  $query
      * @return bool
      */
-    public function unprepared($query)
+    public static function unprepared($query)
     {
         return FacadeDb::unprepared($query);
     }
@@ -169,7 +260,7 @@ class Db implements IDbManater
      * @param  array  $bindings
      * @return array
      */
-    public function prepareBindings(array $bindings)
+    public static function prepareBindings(array $bindings)
     {
         return FacadeDb::prepareBindings($bindings);
     }
@@ -183,7 +274,7 @@ class Db implements IDbManater
      *
      * @throws \Throwable
      */
-    public function transaction(Closure $callback, $attempts = 1)
+    public static function transaction(Closure $callback, $attempts = 1)
     {
         return FacadeDb::transaction($callback, $attempts);
     }
@@ -193,7 +284,7 @@ class Db implements IDbManater
      *
      * @return void
      */
-    public function beginTransaction()
+    public static function beginTransaction()
     {
         FacadeDb::beginTransaction();
     }
@@ -203,7 +294,7 @@ class Db implements IDbManater
      *
      * @return void
      */
-    public function commit()
+    public static function commit()
     {
         FacadeDb::commit();
     }
@@ -213,7 +304,7 @@ class Db implements IDbManater
      *
      * @return void
      */
-    public function rollBack()
+    public static function rollBack()
     {
         FacadeDb::rollBack();
     }
@@ -223,7 +314,7 @@ class Db implements IDbManater
      *
      * @return int
      */
-    public function transactionLevel()
+    public static function transactionLevel()
     {
         return FacadeDb::transactionLevel();
     }
@@ -234,7 +325,7 @@ class Db implements IDbManater
      * @param  \Closure  $callback
      * @return array
      */
-    public function pretend(Closure $callback)
+    public static function pretend(Closure $callback)
     {
         return FacadeDb::pretend($callback);
     }
@@ -244,7 +335,7 @@ class Db implements IDbManater
      *
      * @return string
      */
-    public function getDatabaseName()
+    public static function getDatabaseName()
     {
         return FacadeDb::getDatabaseName();
     }

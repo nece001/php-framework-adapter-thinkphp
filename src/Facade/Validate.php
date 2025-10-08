@@ -3,7 +3,7 @@
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\IValidate;
-use Nece\Framework\Adapter\Exception\Contract\ValidateException;
+use Nece\Framework\Adapter\Contract\Exception\ValidateException;
 use think\facade\Validate as FacadeValidate;
 
 class Validate  implements IValidate
@@ -11,7 +11,7 @@ class Validate  implements IValidate
     /**
      * @inheritDoc
      */
-    public static function validate(array $data, array $validate, array $message = [], bool $batch = false): void
+    public static function validate(array $data, array $validate, array $message = [], array $attributes = [], bool $batch = false): void
     {
         $validator = FacadeValidate::rule($validate)->message($message)->batch($batch);
         if (!$validator->check($data)) {

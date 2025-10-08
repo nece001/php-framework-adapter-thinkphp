@@ -45,7 +45,7 @@ class Query extends ThinkQuery implements IQuery
      *
      * @return array
      */
-    public function all(): array
+    public function fetch(): array
     {
         $list = array();
         $items = $this->select();

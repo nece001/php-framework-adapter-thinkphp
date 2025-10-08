@@ -120,9 +120,9 @@ class Route extends FacadeRoute implements IRoute
      * @param  \Closure|string  $routes
      * @return Group
      */
-    public static function group(string $name, $routes)
+    public static function group(string $name, $routes, array $middleware = [])
     {
-        return parent::group($name, $routes);
+        return parent::group($name, $routes)->middleware($middleware);
     }
 
     /**
