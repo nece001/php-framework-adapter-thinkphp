@@ -2,6 +2,7 @@
 
 namespace Nece\Framework\Adapter\Database;
 
+use Closure;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Gears\Dto;
 use Nece\Gears\PagingCollection;
@@ -10,6 +11,25 @@ use think\db\Query as ThinkQuery;
 
 class Query extends ThinkQuery implements IQuery
 {
+    public function joinTo(string $table, Closure $on, $type = 'INNER', array $bind = []): self
+    {
+        $join = new Join();
+        $on($join);
+        $cond = $join->toString();
+
+        return $this->join($table, $cond, $type, $bind);
+    }
+
+    public function leftJoinTo(string $table, Closure $on, array $bind = []): self
+    {
+        return $this->joinTo($table, $on, 'LEFT', $bind);
+    }
+
+    public function rightJoinTo(string $table, Closure $on, array $bind = []): self
+    {
+        return $this->joinTo($table, $on, 'RIGHT', $bind);
+    }
+
     /**
      * 按分页查询
      *
