@@ -4,6 +4,7 @@ namespace Nece\Framework\Adapter\Database;
 
 use Closure;
 use Nece\Framework\Adapter\Contract\Database\IDbManater;
+use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use think\facade\Db as FacadeDb;
 
 /**
@@ -20,11 +21,11 @@ class Db implements IDbManater
      *
      * @param string $table 表名
      * @param string $as 别名
-     * @return QueryBuilder
+     * @return IQuery
      */
-    public static function table($table, $as = null)
+    public static function table($table, $alias = '') : IQuery
     {
-        return FacadeDb::table($table, $as);
+        return new Query($table, $alias);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Nece\Framework\Adapter\Database;
 
 use Nece\Framework\Adapter\Contract\DataBase\IModel;
+use Nece\Framework\Adapter\Database\Model\Query;
 use think\Model as ThinkModel;
 
 class Model extends ThinkModel implements IModel
@@ -101,6 +102,9 @@ class Model extends ThinkModel implements IModel
      */
     public function fillData(array $data): self
     {
-        return $this->data($data);
+        foreach ($data as $key => $value) {
+            $this->setAttr($key, $value);
+        }
+        return $this;
     }
 }
