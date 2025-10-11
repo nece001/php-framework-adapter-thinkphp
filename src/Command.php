@@ -58,7 +58,7 @@ abstract class Command extends ConsoleCommand implements ICommand
         if (preg_match_all($patt, $this->signature, $matches)) {
             foreach ($matches[1] as $str) {
                 if (0 === strpos($str, '{')) {
-                    $str = substr($str, 1);
+                    $str = trim($str, '{}');
 
                     if (0 === strpos($str, '--')) {
                         // 分析选项
