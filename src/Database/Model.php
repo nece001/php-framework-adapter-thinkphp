@@ -21,7 +21,7 @@ class Model extends ThinkModel implements IModel
      */
     public function startTrans(): void
     {
-        $this->db->startTrans();
+        $this->db()->startTrans();
     }
 
     /**
@@ -34,7 +34,7 @@ class Model extends ThinkModel implements IModel
      */
     public function commit(): void
     {
-        $this->db->commit();
+        $this->db()->commit();
     }
 
     /**
@@ -47,7 +47,7 @@ class Model extends ThinkModel implements IModel
      */
     public function rollback(): void
     {
-        $this->db->rollback();
+        $this->db()->rollback();
     }
 
     /**
