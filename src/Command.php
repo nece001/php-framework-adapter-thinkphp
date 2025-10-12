@@ -131,7 +131,7 @@ abstract class Command extends ConsoleCommand implements ICommand
      *
      * @return void
      */
-    abstract protected function handle();
+    abstract public function handle();
 
     /**
      * 获取命令行参数
