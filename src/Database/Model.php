@@ -100,7 +100,7 @@ class Model extends ThinkModel implements IModel
      * @param array $data
      * @return self
      */
-    public function fillData(array $data): self
+    public function fill(array $data): self
     {
         foreach ($data as $key => $value) {
             $this->setAttr($key, $value);
