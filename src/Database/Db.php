@@ -129,4 +129,43 @@ class Db implements IDbManater
     {
         return self::rawFunc('max', $field, $alias);
     }
+
+    /**
+     * 开启事务
+     *
+     * @author nece001@163.com
+     * @create 2025-10-12 14:56:48
+     *
+     * @return void
+     */
+    public static function startTrans()
+    {
+        FacadeDb::startTrans();
+    }
+
+    /**
+     * 提交事务
+     *
+     * @author nece001@163.com
+     * @create 2025-10-08 10:26:24
+     *
+     * @return void
+     */
+    public static function commit()
+    {
+        FacadeDb::commit();
+    }
+
+    /**
+     * 回滚事务
+     *
+     * @author nece001@163.com
+     * @create 2025-10-08 10:26:42
+     *
+     * @return void
+     */
+    public static function rollback()
+    {
+        FacadeDb::rollback();
+    }
 }
