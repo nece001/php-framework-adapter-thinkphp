@@ -36,6 +36,22 @@ class Query implements IQuery
     }
 
     /**
+     * 调用查询方法
+     *
+     * @author nece001@163.com
+     * @create 2025-10-25 15:24:16
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return self
+     */
+    public function __call($name, $arguments)
+    {
+        $this->query->$name(...$arguments);
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getAlias(): string

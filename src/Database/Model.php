@@ -9,7 +9,7 @@ use think\Model as ThinkModel;
 class Model extends ThinkModel implements IModel
 {
     // 指定使用的查询类
-    protected $query = Query::class;
+    // protected $query = Query::class;
 
     /**
      * 开始事务

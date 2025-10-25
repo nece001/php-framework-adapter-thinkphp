@@ -2,7 +2,6 @@
 
 namespace Nece\Framework\Adapter\Database;
 
-use Closure;
 use Nece\Framework\Adapter\Contract\Database\IDbManater;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use think\facade\Db as FacadeDb;
@@ -14,14 +13,7 @@ use think\facade\Db as FacadeDb;
 class Db implements IDbManater
 {
     /**
-     * 获取查询构建器
-     *
-     * @author nece001@163.com
-     * @create 2025-10-05 11:28:24
-     *
-     * @param string $table 表名
-     * @param string $as 别名
-     * @return IQuery
+     * @inheritDoc
      */
     public static function table($table, $alias = ''): IQuery
     {
@@ -29,10 +21,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 原始表达式
-     *
-     * @param  mixed  $value
-     * @return Expression
+     * @inheritDoc
      */
     public static function raw($value)
     {
@@ -40,15 +29,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 原始函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:04:25
-     *
-     * @param string $func 函数名
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawFunc(string $func, string $field, string $alias)
     {
@@ -56,14 +37,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 计数函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:04:43
-     *
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawCount(string $field, string $alias)
     {
@@ -71,14 +45,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 求和函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:04:52
-     *
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawSum(string $field, string $alias)
     {
@@ -86,14 +53,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 平均值函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:05:01
-     *
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawAvg(string $field, string $alias)
     {
@@ -101,14 +61,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 最小值函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:05:10
-     *
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawMin(string $field, string $alias)
     {
@@ -116,14 +69,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 最大值函数表达式
-     *
-     * @author nece001@163.com
-     * @create 2025-10-07 23:05:19
-     *
-     * @param string $field 字段名
-     * @param string $alias 别名
-     * @return Expression
+     * @inheritDoc
      */
     public static function rawMax(string $field, string $alias)
     {
@@ -131,12 +77,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 开启事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-12 14:56:48
-     *
-     * @return void
+     * @inheritDoc
      */
     public static function startTrans()
     {
@@ -144,12 +85,7 @@ class Db implements IDbManater
     }
 
     /**
-     * 提交事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-08 10:26:24
-     *
-     * @return void
+     * @inheritDoc
      */
     public static function commit()
     {
@@ -157,15 +93,26 @@ class Db implements IDbManater
     }
 
     /**
-     * 回滚事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-08 10:26:42
-     *
-     * @return void
+     * @inheritDoc
      */
     public static function rollback()
     {
         FacadeDb::rollback();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function transaction(callable $callback)
+    {
+        return FacadeDb::transaction($callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function execute(string $sql)
+    {
+        return FacadeDb::execute($sql);
     }
 }

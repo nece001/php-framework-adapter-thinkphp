@@ -28,19 +28,6 @@ abstract class Command extends ConsoleCommand implements ICommand
      */
     protected $description = '';
 
-    /**
-     * 命令行输入
-     *
-     * @var Input
-     */
-    protected $input;
-
-    /**
-     * 命令行输出
-     *
-     * @var Output
-     */
-    protected $output;
 
     /**
      * 配置命令
@@ -117,9 +104,6 @@ abstract class Command extends ConsoleCommand implements ICommand
      */
     public function execute(Input $input, Output $output)
     {
-        $this->input = $input;
-        $this->output = $output;
-
         $this->handle();
     }
 
