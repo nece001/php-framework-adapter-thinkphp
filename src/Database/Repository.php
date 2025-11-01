@@ -5,13 +5,15 @@ namespace Nece\Framework\Adapter\Database;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Framework\Adapter\Contract\DataBase\IRepository;
 use Nece\Framework\Adapter\Database\Db;
+use Nece\Gears\AggregateRoot;
+use Nece\Gears\PagingVar;
 
 abstract class Repository implements IRepository
 {
     /**
      * @inheritDoc
      */
-    public static function transaction(callable $callback)
+    public function transaction(callable $callback)
     {
         return Db::transaction($callback);
     }
@@ -19,59 +21,102 @@ abstract class Repository implements IRepository
     /**
      * @inheritDoc
      */
-    public static function startTrans()
+    public function startTrans(): void
     {
-        return Db::startTrans();
+        Db::startTrans();
     }
 
     /**
      * @inheritDoc
      */
-    public static function commit()
+    public function commit(): void
     {
-        return Db::commit();
+        Db::commit();
     }
 
     /**
      * @inheritDoc
      */
-    public static function rollback()
+    public function rollback(): void
     {
-        return Db::rollback();
+        Db::rollback();
     }
 
-    protected function findWithModel($model, $value)
+    public function find(array $where)
     {
-        if (is_array($value)) {
-            return $model->where($value)->find();
+        $model = $this->getModelName()::where($where)->select();
+        if (!$model) {
+            return null;
         }
-        return $model::find($value);
+        return $this->getEntityName()::buildFromData($model->toArray());
     }
 
-    protected function updateWithModel($model, array $where, array $data, $comment = '')
+    public function findById($id)
     {
-        $query = $model->where($where);
-        if ($comment) {
-            $query->comment($comment);
+        $model = $this->getModelName()::find($id);
+        if (!$model) {
+            return null;
         }
-        $query->update($data);
+        return $this->getEntityName()::buildFromData($model->toArray());
     }
 
-    protected function saveWithModel($model, array $data)
+    public function delete($entity)
     {
-        $model->save($data);
+        $model_name = $this->getModelName();
+        $model_name::destroy($entity->getId());
+        $entity->emitEvents();
     }
 
-    protected function deleteWithModel($model, array $where)
+    public function save($entity): void
     {
-        $class = get_class($model);
-        $class::destroy(function ($query) use ($where) {
-            $query->where($where);
-        });
+        $id = $entity->getId();
+        $model = null;
+        $model_name = $this->getModelName();
+        if ($id) {
+            $model = $model_name::find($id);
+        }
+        if (!$model) {
+            $model = new $model_name();
+        }
+
+        $model->save($entity->toArray());
+        $entity->setId($model->id);
+        $entity->emitEvents();
     }
 
-    protected function queryWithModel($model, $alias = '')
+    public function fetchAll(IQuery $query)
     {
-        return Db::table($model->getTable(), $alias);
+        $items = array();
+        $list = $query->fetchAll();
+        foreach ($list as $item) {
+            $items[] = $this->buildDto($item->toArray());
+        }
+        return $items;
+    }
+
+    public function paginate(IQuery $query, PagingVar $paging)
+    {
+        $items = array();
+        $list = $query->paginate($paging);
+        foreach ($list as $item) {
+            $items[] = $this->buildDto($item->toArray());
+        }
+        return $items;
+    }
+
+    public function query(string $alias = ''): IQuery
+    {
+        $model = $this->createModel();
+        return new Query($model->getTable(), $alias);
+    }
+
+    protected function createModel()
+    {
+        return new ($this->getModelName());
+    }
+
+    protected function buildDto(array $data)
+    {
+        return new ($this->getDtoName())($data);
     }
 }

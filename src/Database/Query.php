@@ -243,13 +243,13 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
-    public function fetch(): array
+    public function fetchAll(): array
     {
         $list = array();
         $items = $this->query->select();
         if ($items) {
             foreach ($items as $row) {
-                $list[] = new Dto($row);
+                $list[] = $row;
             }
         }
         return $list;
@@ -270,12 +270,13 @@ class Query implements IQuery
             $list->setCurrentPage($items->currentPage());
 
             foreach ($items as $row) {
-                $list->add(new Dto($row));
+                $list->add($row);
             }
         }
 
         return $list;
     }
+    
     /**
      * @inheritDoc
      */
