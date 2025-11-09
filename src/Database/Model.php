@@ -3,21 +3,18 @@
 namespace Nece\Framework\Adapter\Database;
 
 use Nece\Framework\Adapter\Contract\DataBase\IModel;
-use Nece\Framework\Adapter\Database\Model\Query;
 use think\Model as ThinkModel;
 
-class Model extends ThinkModel implements IModel
+/**
+ * ThinkPHP模型适配类
+ *
+ * @author nece001@163.com
+ * @create 2025-11-09 17:00:42
+ */
+abstract class Model extends ThinkModel implements IModel
 {
-    // 指定使用的查询类
-    // protected $query = Query::class;
-
     /**
-     * 开始事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-05 11:13:16
-     *
-     * @return void
+     * @inheritDoc
      */
     public function startTrans(): void
     {
@@ -25,12 +22,7 @@ class Model extends ThinkModel implements IModel
     }
 
     /**
-     * 提交事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-05 11:13:16
-     *
-     * @return void
+     * @inheritDoc
      */
     public function commit(): void
     {
@@ -38,12 +30,7 @@ class Model extends ThinkModel implements IModel
     }
 
     /**
-     * 回滚事务
-     *
-     * @author nece001@163.com
-     * @create 2025-10-05 11:13:16
-     *
-     * @return void
+     * @inheritDoc
      */
     public function rollback(): void
     {
@@ -51,44 +38,11 @@ class Model extends ThinkModel implements IModel
     }
 
     /**
-     * 获取表名
-     *
-     * @author nece001@163.com
-     * @create 2025-10-05 11:13:16
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function getTableName(): string
+    public function getTable(): string
     {
-        return $this->table;
-    }
-
-    /**
-     * 查询表
-     *
-     * @author nece001@163.com
-     * @create 2025-10-08 11:34:30
-     *
-     * @param string $table
-     * @param string $alias
-     * @return self
-     */
-    public function from(string $table, string $alias = '')
-    {
-        return $this->table($table)->alias($alias);
-    }
-
-    /**
-     * 获取表别名
-     *
-     * @author nece001@163.com
-     * @create 2025-10-08 11:34:30
-     *
-     * @return string
-     */
-    public function getAlias()
-    {
-        return parent::getAlias($this->getTable());
+        return $this->db()->getTable();
     }
 
     /**

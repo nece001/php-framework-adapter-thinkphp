@@ -3,23 +3,13 @@
 namespace Nece\Framework\Adapter\Database;
 
 use Nece\Framework\Adapter\Contract\Database\IDbManater;
-use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use think\facade\Db as FacadeDb;
 
 /**
- * @see \think\DbManager
- * @mixin \think\DbManager
+ * Db门面适配类
  */
 class Db implements IDbManater
 {
-    /**
-     * @inheritDoc
-     */
-    public static function table($table, $alias = ''): IQuery
-    {
-        return new Query($table, $alias);
-    }
-
     /**
      * @inheritDoc
      */

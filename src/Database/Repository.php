@@ -2,12 +2,17 @@
 
 namespace Nece\Framework\Adapter\Database;
 
+use Nece\Framework\Adapter\Contract\DataBase\IModel;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Framework\Adapter\Contract\DataBase\IRepository;
 use Nece\Framework\Adapter\Database\Db;
-use Nece\Gears\AggregateRoot;
-use Nece\Gears\PagingVar;
 
+/**
+ * 数据库仓储基类
+ *
+ * @author nece001@163.com
+ * @create 2025-11-09 17:09:11
+ */
 abstract class Repository implements IRepository
 {
     /**
@@ -42,6 +47,12 @@ abstract class Repository implements IRepository
         Db::rollback();
     }
 
+    public function createModel(): IModel
+    {
+        $class = $this->getModelName();
+        return new $class();
+    }
+
     public function find(array $where)
     {
         $model = $this->getModelName()::where($where)->select();
@@ -53,7 +64,7 @@ abstract class Repository implements IRepository
 
     public function findById($id)
     {
-        $model = $this->getModelName()::find($id);
+        $model = $this->query()->find($id);
         if (!$model) {
             return null;
         }
@@ -71,52 +82,36 @@ abstract class Repository implements IRepository
     {
         $id = $entity->getId();
         $model = null;
-        $model_name = $this->getModelName();
+        $query = $this->query();
         if ($id) {
-            $model = $model_name::find($id);
+            $model = $query->find($id);
         }
         if (!$model) {
-            $model = new $model_name();
+            $model = $this->createModel();
         }
 
-        $model->save($entity->toArray());
+        $model->fill($entity->toSaveArray());
+        $model->save();
         $entity->setId($model->id);
         $entity->emitEvents();
     }
 
-    public function fetchAll(IQuery $query)
-    {
-        $items = array();
-        $list = $query->fetchAll();
-        foreach ($list as $item) {
-            $items[] = $this->buildDto($item->toArray());
-        }
-        return $items;
-    }
-
-    public function paginate(IQuery $query, PagingVar $paging)
-    {
-        $items = array();
-        $list = $query->paginate($paging);
-        foreach ($list as $item) {
-            $items[] = $this->buildDto($item->toArray());
-        }
-        return $items;
-    }
-
+    /**
+     * 新建查询
+     *
+     * @author nece001@163.com
+     * @create 2025-11-09 16:42:19
+     *
+     * @param string $alias
+     * @return IQuery
+     */
     public function query(string $alias = ''): IQuery
     {
-        $model = $this->createModel();
-        return new Query($model->getTable(), $alias);
-    }
+        $query = $this->getModelName()::field([]); // 创建一个空的查询对象
+        if ($alias) {
+            $query->alias($alias);
+        }
 
-    protected function createModel()
-    {
-        return new ($this->getModelName());
-    }
-
-    protected function buildDto(array $data)
-    {
-        return new ($this->getDtoName())($data);
+        return new Query($query);
     }
 }

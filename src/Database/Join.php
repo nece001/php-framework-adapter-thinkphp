@@ -2,6 +2,12 @@
 
 namespace Nece\Framework\Adapter\Database;
 
+/**
+ * 查询连接条件类
+ *
+ * @author nece001@163.com
+ * @create 2025-11-09 17:52:36
+ */
 class Join
 {
     private $options = [];
@@ -30,7 +36,7 @@ class Join
             if ($tmp) {
                 $line = $row['or'] . ' ';
             }
-            $line .= $row['field'] . $row['op'] . $row['value'];
+            $line .= $row['field'] . ' ' . $row['op'] . ' ' . $row['value'];
             $tmp[] = $line;
         }
 
