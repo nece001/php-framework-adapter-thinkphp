@@ -2,7 +2,6 @@
 
 namespace Nece\Framework\Adapter\Database;
 
-use Nece\Framework\Adapter\Contract\DataBase\IModel;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Framework\Adapter\Contract\DataBase\IRepository;
 use Nece\Framework\Adapter\Database\Db;
@@ -47,7 +46,7 @@ abstract class Repository implements IRepository
         Db::rollback();
     }
 
-    public function createModel(): IModel
+    public function createModel(): Model
     {
         $class = $this->getModelName();
         return new $class();
@@ -107,7 +106,7 @@ abstract class Repository implements IRepository
      */
     public function query(string $alias = ''): IQuery
     {
-        $query = $this->getModelName()::field([]); // 创建一个空的查询对象
+        $query = $this->createModel()->db(); // 创建一个空的查询对象
         if ($alias) {
             $query->alias($alias);
         }
