@@ -5,6 +5,7 @@ namespace Nece\Framework\Adapter\Database;
 use Nece\Framework\Adapter\Contract\DataBase\IModel;
 use Nece\Framework\Adapter\Contract\DataBase\IRepository;
 use Nece\Framework\Adapter\Contract\DataBase\DbRepository;
+use Nece\Framework\Adapter\Contract\DataBase\IQuery;
 use Nece\Framework\Adapter\Database\Db;
 
 /**
@@ -62,5 +63,11 @@ abstract class Repository extends DbRepository implements IRepository
 
         $model->setRepositoryGlobalScope($available_scopes);
         return $model;
+    }
+
+    public function query(string $alias = ''): IQuery
+    {
+        $model = $this->createModel();
+        return $model->newQuery($alias);
     }
 }
