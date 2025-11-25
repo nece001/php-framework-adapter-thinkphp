@@ -17,24 +17,72 @@ use think\db\Query as DbQuery;
  */
 abstract class Model extends ThinkModel implements IModel
 {
+    /**
+     * 模型内部定义的作用于本模型的全局查询范围
+     *
+     * @var array
+     */
+    protected static $model_global_scopes = [];
+
+    /**
+     * 仓储全局查询范围
+     *
+     * @var array
+     */
     private $repository_global_scopes = [];
 
-    public function newQuery($alias = null): IQuery
+    /**
+     * ThinkPHP框架的全局查询范围（定义模型的范围时，尽量不要再使用这个属性，使用static::$model_global_scopes）
+     *
+     * @var array
+     */
+    protected $globalScope = [];
+
+    /**
+     * 构造方法
+     *
+     * @author nece001@163.com
+     * @create 2025-11-25 12:50:36
+     *
+     * @param array $data
+     */
+    public function __construct(array $data = [])
     {
-        $query = $this->db(); // 创建一个空的查询对象
-        if ($alias) {
-            $query->alias($alias);
+        parent::__construct($data);
+
+        $this->globalScope[] = 'applyRepositoryGlobal'; // 注册本模型的全局查询范围
+
+        // 注册本模型定义的全局查询范围
+        if (static::$model_global_scopes) {
+            $this->globalScope = array_merge($this->globalScope, static::$model_global_scopes);
         }
-        $this->applyRepositoryGlobalScope($query);
-        return new Query($query);
     }
 
-    public function setRepositoryGlobalScope($scopes)
+    /**
+     * 注册仓储全局查询范围
+     * 在仓储层实例化模型时设置仓储全局查询范围
+     *
+     * @author nece001@163.com
+     * @create 2025-11-25 12:43:36
+     *
+     * @param array $scopes
+     * @return void
+     */
+    public function setRepositoryGlobalScope(array $scopes): void
     {
         $this->repository_global_scopes = $scopes;
     }
 
-    public function applyRepositoryGlobalScope($query)
+    /**
+     * applyRepositoryGlobalScope的别名，按thinkPHP的规则定义
+     *
+     * @author nece001@163.com
+     * @create 2025-11-25 12:54:07
+     *
+     * @param DbQuery $query
+     * @return void
+     */
+    public function scopeApplyRepositoryGlobal(DbQuery $query): void
     {
         foreach ($this->repository_global_scopes as $scope) {
             $scope->apply($query);
@@ -74,33 +122,21 @@ abstract class Model extends ThinkModel implements IModel
     }
 
     /**
-     * 填充字段数据
+     * 创建一个新查询
      *
      * @author nece001@163.com
-     * @create 2025-10-08 11:44:13
+     * @create 2025-11-25 12:42:49
      *
-     * @param array $data
-     * @return self
-     */
-    public function fill(array $data): self
-    {
-        foreach ($data as $key => $value) {
-            $this->setAttr($key, $value);
-        }
-        return $this;
-    }
-
-    /**
-     * 包装查询对象
-     *
-     * @author nece001@163.com
-     * @create 2025-11-10 19:23:11
-     *
-     * @param DbQuery $query
+     * @param string $alias
      * @return IQuery
      */
-    protected function packQuery(DbQuery $query): IQuery
+    public function newQuery($alias = null): IQuery
     {
+        $query = $this->db(); // 创建一个空的查询对象
+        if ($alias) {
+            $query->alias($alias);
+        }
+        $this->scopeApplyRepositoryGlobal($query);
         return new Query($query);
     }
 }
