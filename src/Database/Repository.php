@@ -48,6 +48,9 @@ abstract class Repository extends DbRepository implements IRepository
         Db::rollback();
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function createModel(): IModel
     {
         $modelName = $this->getModelName();
@@ -65,6 +68,9 @@ abstract class Repository extends DbRepository implements IRepository
         return $model;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function query(string $alias = ''): IQuery
     {
         $model = $this->createModel();
