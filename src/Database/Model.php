@@ -139,4 +139,18 @@ abstract class Model extends ThinkModel implements IModel
         $this->scopeApplyRepositoryGlobal($query);
         return new Query($query);
     }
+
+    /**
+     * 从查询中获取表别名
+     *
+     * @author nece001@163.com
+     * @create 2025-11-25 13:51:41
+     *
+     * @param DbQuery $query
+     * @return string
+     */
+    public function getAliasFromQuery($query)
+    {
+        return $query->getAlias();
+    }
 }
