@@ -27,7 +27,7 @@ abstract class ServiceProvider extends Service implements IServiceProvider
     /**
      * @inheritDoc
      */
-    public function bind(string|array $abstract, $concrete = null): void
+    public function bind($abstract, $concrete = null): void
     {
         $this->app->bind($abstract, $concrete);
     }
