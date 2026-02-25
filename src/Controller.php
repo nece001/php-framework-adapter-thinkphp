@@ -4,6 +4,7 @@ namespace Nece\Framework\Adapter;
 
 use app\BaseController;
 use Nece\Framework\Adapter\Contract\IController;
+use Nece\Framework\Adapter\Facade\Route;
 use Nece\Framework\Adapter\Response as AdapterResponse;
 use Nece\Gears\PagingVar;
 use think\Request;
@@ -101,5 +102,22 @@ abstract class Controller extends BaseController implements IController
     {
         $response = new AdapterResponse($this->getRequest()->is_json_request);
         return $response->redirect($url, $result, $code);
+    }
+
+    /**
+     * 重定向路由
+     *
+     * @author nece001@163.com
+     * @create 2026-02-25 11:30:19
+     *
+     * @param string $route_name 路由名称
+     * @param mixed $result 重定向结果
+     * @param integer $code HTTP状态码
+     * @return Response
+     */
+    public function redirectRoute(string $route_name, $result, int $code = 302)
+    {
+        $url = Route::url($route_name);
+        return $this->redirectTo($url, $result, $code);
     }
 }
