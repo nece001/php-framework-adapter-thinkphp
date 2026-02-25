@@ -4,8 +4,6 @@ namespace Nece\Framework\Adapter\Database;
 
 use Closure;
 use Nece\Framework\Adapter\Contract\DataBase\IQuery;
-use Nece\Gears\PagingCollection;
-use Nece\Gears\PagingVar;
 use think\db\Query as DbQuery;
 
 /**
@@ -203,5 +201,13 @@ class Query implements IQuery
     {
         $this->query->order($field, $order);
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pluck($field, $key = null): array
+    {
+        return $this->query->column($field, $key);
     }
 }
