@@ -206,7 +206,7 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
-    public function pluck($field, $key = null): array
+    public function pluck($field, $key = ''): array
     {
         return $this->query->column($field, $key);
     }
