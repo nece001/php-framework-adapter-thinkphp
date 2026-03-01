@@ -13,11 +13,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:43:06
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function emergency(string|\Stringable $message, array $context = []): void
+    static public function emergency(string $message, array $context = []): void
     {
         parent::emergency($message, $context);
     }
@@ -28,11 +28,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:43:22
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function alert(string|\Stringable $message, array $context = []): void
+    static public function alert(string $message, array $context = []): void
     {
         parent::alert($message, $context);
     }
@@ -43,11 +43,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:43:38
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function critical(string|\Stringable $message, array $context = []): void
+    static public function critical(string $message, array $context = []): void
     {
         parent::critical($message, $context);
     }
@@ -58,11 +58,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:43:54
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function error(string|\Stringable $message, array $context = []): void
+    static public function error(string $message, array $context = []): void
     {
         parent::error($message, $context);
     }
@@ -73,11 +73,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:44:09
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function warning(string|\Stringable $message, array $context = []): void
+    static public function warning(string $message, array $context = []): void
     {
         parent::warning($message, $context);
     }
@@ -88,11 +88,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:44:24
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function notice(string|\Stringable $message, array $context = []): void
+    static public function notice(string $message, array $context = []): void
     {
         parent::notice($message, $context);
     }
@@ -103,11 +103,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:44:39
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function info(string|\Stringable $message, array $context = []): void
+    static public function info(string $message, array $context = []): void
     {
         parent::info($message, $context);
     }
@@ -118,11 +118,11 @@ class Log extends FacadeLog implements ILog
      * @author nece001@163.com
      * @create 2025-10-05 10:44:54
      *
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function debug(string|\Stringable $message, array $context = []): void
+    static public function debug(string $message, array $context = []): void
     {
         parent::debug($message, $context);
     }
@@ -134,11 +134,11 @@ class Log extends FacadeLog implements ILog
      * @create 2025-10-05 10:45:09
      *
      * @param mixed $level
-     * @param string|\Stringable $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    static public function log($level, string|\Stringable $message, array $context = []): void
+    static public function log($level, string $message, array $context = []): void
     {
         parent::log($level, $message, $context);
     }
