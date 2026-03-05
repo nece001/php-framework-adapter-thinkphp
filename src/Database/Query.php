@@ -138,7 +138,7 @@ class Query implements IQuery
         $items = $this->query->select();
         if ($items) {
             foreach ($items as $row) {
-                $list[] = $row;
+                $list[] = $row->toArray();
             }
         }
         return $list;
@@ -162,7 +162,7 @@ class Query implements IQuery
             $data['current_page'] = $items->currentPage();
 
             foreach ($items as $row) {
-                $data['items'][] = $row;
+                $data['items'][] = $row->toArray();
             }
         }
 
