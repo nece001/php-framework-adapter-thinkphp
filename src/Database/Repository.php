@@ -51,7 +51,7 @@ abstract class Repository extends DbRepository implements IRepository
     /**
      * @inheritDoc
      */
-    protected function createModel(): IModel
+    public function createModel(): IModel
     {
         $modelName = $this->getModelName();
         $model = new $modelName();
