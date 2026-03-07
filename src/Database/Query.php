@@ -224,6 +224,15 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
+    public function comment($comment): self
+    {
+        $this->query->comment($comment);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function pluck($field, $key = ''): array
     {
         return $this->query->column($field, $key);
