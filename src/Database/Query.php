@@ -215,10 +215,27 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
+    public function increment(string $field, int $step = 1): self
+    {
+        $this->query->inc($field, $step);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function lock($lock = false): self
     {
         $this->query->lock($lock);
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function update(array $data = []): int
+    {
+        return $this->query->update($data);
     }
 
     /**
