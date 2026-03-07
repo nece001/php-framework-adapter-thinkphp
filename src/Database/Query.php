@@ -206,6 +206,15 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
+    public function orderRaw($order): self
+    {
+        $this->query->orderRaw($order);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function pluck($field, $key = ''): array
     {
         return $this->query->column($field, $key);
