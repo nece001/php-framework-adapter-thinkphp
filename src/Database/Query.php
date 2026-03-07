@@ -215,6 +215,15 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
+    public function lock($lock = false): self
+    {
+        $this->query->lock($lock);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function pluck($field, $key = ''): array
     {
         return $this->query->column($field, $key);
