@@ -233,6 +233,24 @@ class Query implements IQuery
     /**
      * @inheritDoc
      */
+    public function offset(int $offset): self
+    {
+        $this->query->offset($offset);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function limit(int $limit): self
+    {
+        $this->query->limit($limit);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function update(array $data = []): int
     {
         return $this->query->update($data);
