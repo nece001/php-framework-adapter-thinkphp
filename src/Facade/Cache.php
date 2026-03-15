@@ -10,7 +10,7 @@ class Cache extends FacadeCache implements ICache
     /**
      * @inheritDoc
      */
-    static public function get(string $key, mixed $default = null): mixed
+    static public function get(string $key, $default = null)
     {
         return parent::get($key, $default);
     }
@@ -18,7 +18,7 @@ class Cache extends FacadeCache implements ICache
     /**
      * @inheritDoc
      */
-    static public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    static public function set(string $key, $value, $ttl = null): bool
     {
         return parent::set($key, $value, $ttl);
     }
@@ -42,7 +42,7 @@ class Cache extends FacadeCache implements ICache
     /**
      * @inheritDoc
      */
-    static public function getMultiple(iterable $keys, mixed $default = null): iterable
+    static public function getMultiple(iterable $keys, $default = null): iterable
     {
         return parent::getMultiple($keys, $default);
     }
@@ -50,7 +50,7 @@ class Cache extends FacadeCache implements ICache
     /**
      * @inheritDoc
      */
-    static public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    static public function setMultiple(iterable $values, $ttl = null): bool
     {
         return parent::setMultiple($values, $ttl);
     }
