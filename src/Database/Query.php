@@ -129,6 +129,17 @@ class Query implements IQuery
         return $this;
     }
 
+    public function whereExists($query)
+    {
+        $sql = $query;
+        if ($query instanceof IQuery) {
+            $sql = $query->toSql();
+        }
+
+        $this->query->whereExists($sql);
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
