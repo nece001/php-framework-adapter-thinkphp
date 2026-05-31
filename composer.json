@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "php": ">=7.2"
+        "php": ">=8.0.0",
+        "nece001/php-framework-adapter": "^2.0"
     },
     "extra": {
         "think": {
