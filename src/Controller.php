@@ -197,7 +197,7 @@ class Controller implements ContractController
      */
     public function success($data = null)
     {
-        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data]);
+        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data], 200);
     }
 
     /**

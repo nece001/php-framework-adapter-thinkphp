@@ -19,7 +19,7 @@ class Response implements ResponseContract
      */
     public static function json($data, int $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
     {
-        return \json($data, $options);
+        return \json($data);
     }
 
     /**
@@ -35,7 +35,7 @@ class Response implements ResponseContract
      */
     public static function jsonp($data, string $callback_name = 'callback')
     {
-        return \jsonp($data, $callback_name);
+        return \jsonp($data);
     }
 
     /**
@@ -43,7 +43,7 @@ class Response implements ResponseContract
      */
     public static function redirect(string $location, int $status = 302, array $headers = [])
     {
-        return \redirect($location, $status, $headers);
+        return \redirect($location, $status);
     }
 
     /**
@@ -51,7 +51,7 @@ class Response implements ResponseContract
      */
     public static function view(mixed $template = null, array $vars = [], ?string $app = null, ?string $plugin = null)
     {
-        return \view($template, $vars, $app, $plugin);
+        return \view($template, $vars);
     }
 
     /**
@@ -59,8 +59,7 @@ class Response implements ResponseContract
      */
     public static function download(string $file_path, ?string $filename = null)
     {
-        $response = new \support\Response();
-        return $response->download($file_path, $filename ?? '');
+        return \download($file_path, $filename ?? '');
     }
 
     /**
@@ -68,6 +67,6 @@ class Response implements ResponseContract
      */
     public static function notFound()
     {
-        return \not_found();
+        return \abort(404);
     }
 }

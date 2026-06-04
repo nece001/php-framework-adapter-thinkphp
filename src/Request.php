@@ -86,11 +86,7 @@ class Request implements ContractRequest
      */
     public function param($name = '', $default = null, $filter = '')
     {
-        $params = $this->request->get() + $this->request->post();
-        if ($this->request->route) {
-            $params = $this->request->route->param() + $params;
-        }
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->param($name, $default, $filter);
     }
 
     /**
@@ -115,8 +111,7 @@ class Request implements ContractRequest
      */
     public function get($name = '', $default = null, $filter = '')
     {
-        $params = $this->request->get();
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->get($name, $default, $filter);
     }
 
     /**
@@ -129,8 +124,7 @@ class Request implements ContractRequest
      */
     public function post($name = '', $default = null, $filter = '')
     {
-        $params = $this->request->post();
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->post($name, $default, $filter);
     }
 
     /**
@@ -143,16 +137,7 @@ class Request implements ContractRequest
      */
     public function put($name = '', $default = null, $filter = '')
     {
-        $params = [];
-        if ($this->request->method() === 'PUT') {
-            $contentType = $this->request->header('content-type', '');
-            if (str_contains($contentType, 'json')) {
-                $params = (array)json_decode($this->request->rawBody(), true);
-            } else {
-                parse_str($this->request->rawBody(), $params);
-            }
-        }
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->put($name, $default, $filter);
     }
 
     /**
@@ -165,15 +150,7 @@ class Request implements ContractRequest
      */
     public function delete($name = '', $default = null, $filter = '')
     {
-        $params = $this->request->get();
-        $contentType = $this->request->header('content-type', '');
-        if (str_contains($contentType, 'json')) {
-            $params = array_merge($params, (array)json_decode($this->request->rawBody(), true));
-        } else {
-            parse_str($this->request->rawBody(), $postData);
-            $params = array_merge($params, $postData);
-        }
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->delete($name, $default, $filter);
     }
 
     /**
@@ -186,10 +163,7 @@ class Request implements ContractRequest
      */
     public function input($name = '', $default = null, $filter = '')
     {
-        if ($name === '') {
-            return $this->param();
-        }
-        return $this->param($name, $default, $filter);
+        return $this->request->param($name, $default, $filter);
     }
 
     /**
@@ -202,11 +176,7 @@ class Request implements ContractRequest
      */
     public function route($name = '', $default = null, $filter = '')
     {
-        $params = [];
-        if ($this->request->route) {
-            $params = $this->request->route->param();
-        }
-        return $this->getValue($params, $name, $default, $filter);
+        return $this->request->route($name, $default, $filter);
     }
 
     /**
@@ -219,10 +189,7 @@ class Request implements ContractRequest
      */
     public function cookie(string $name = '', $default = null, $filter = '')
     {
-        if ($name === '') {
-            return $this->request->cookie();
-        }
-        return $this->filterValue($this->request->cookie($name, $default), $filter);
+        return $this->request->cookie($name, $default, $filter);
     }
 
     /**
@@ -246,11 +213,7 @@ class Request implements ContractRequest
      */
     public function server(string $name = '', string $default = '')
     {
-        if ($name === '') {
-            return $_SERVER;
-        }
-        $name = strtoupper($name);
-        return $_SERVER[$name] ?? $default;
+        return $this->request->server($name, $default);
     }
 
     /**
@@ -262,9 +225,6 @@ class Request implements ContractRequest
      */
     public function header(string $name = '', string $default = null)
     {
-        if ($name === '') {
-            return $this->request->header();
-        }
         return $this->request->header($name, $default);
     }
 
@@ -294,14 +254,7 @@ class Request implements ContractRequest
      */
     public function method(bool $origin = false): string
     {
-        if ($origin) {
-            return $this->request->method();
-        }
-        $method = $this->request->post('_method', '');
-        if (!empty($method)) {
-            return strtoupper($method);
-        }
-        return $this->request->method();
+        return $this->request->method($origin);
     }
 
     /**
@@ -328,7 +281,7 @@ class Request implements ContractRequest
      */
     public function isPut(): bool
     {
-        return $this->method() === 'PUT';
+        return $this->request->isPut();
     }
 
     /**
@@ -337,7 +290,7 @@ class Request implements ContractRequest
      */
     public function isDelete(): bool
     {
-        return $this->method() === 'DELETE';
+        return $this->request->isDelete();
     }
 
     /**
@@ -348,10 +301,7 @@ class Request implements ContractRequest
      */
     public function isAjax(bool $ajax = false): bool
     {
-        if ($ajax) {
-            return $this->request->isAjax();
-        }
-        return $this->request->isAjax() || $this->request->expectsJson();
+        return $this->request->isAjax($ajax);
     }
 
     /**
@@ -360,8 +310,7 @@ class Request implements ContractRequest
      */
     public function isJson(): bool
     {
-        $contentType = $this->request->header('content-type', '');
-        return str_contains($contentType, 'application/json');
+        return $this->request->isJson();
     }
 
     /**
@@ -370,8 +319,7 @@ class Request implements ContractRequest
      */
     public function isSsl(): bool
     {
-        return $this->request->header('x-forwarded-proto') === 'https' ||
-            $this->request->header('x-scheme') === 'https';
+        return $this->request->isSsl();
     }
 
     /**
@@ -380,7 +328,7 @@ class Request implements ContractRequest
      */
     public function isCli(): bool
     {
-        return PHP_SAPI === 'cli';
+        return $this->request->isCli();
     }
 
     /**
@@ -393,35 +341,7 @@ class Request implements ContractRequest
      */
     public function has(string $name, string $type = 'param', bool $checkEmpty = false): bool
     {
-        switch ($type) {
-            case 'get':
-                $params = $this->request->get();
-                break;
-            case 'post':
-                $params = $this->request->post();
-                break;
-            case 'put':
-                $params = $this->put();
-                break;
-            case 'route':
-                $params = $this->route();
-                break;
-            case 'cookie':
-                $params = $this->request->cookie();
-                break;
-            case 'session':
-                $params = $this->session();
-                break;
-            default:
-                $params = $this->param();
-        }
-        if (!isset($params[$name])) {
-            return false;
-        }
-        if ($checkEmpty) {
-            return !empty($params[$name]);
-        }
-        return true;
+        return $this->request->has($name, $type, $checkEmpty);
     }
 
     /**
@@ -434,39 +354,7 @@ class Request implements ContractRequest
      */
     public function only(array $name, $data = 'param', $filter = ''): array
     {
-        if (is_array($data)) {
-            $params = $data;
-        } else {
-            switch ($data) {
-                case 'get':
-                    $params = $this->request->get();
-                    break;
-                case 'post':
-                    $params = $this->request->post();
-                    break;
-                case 'put':
-                    $params = $this->put();
-                    break;
-                case 'route':
-                    $params = $this->route();
-                    break;
-                case 'cookie':
-                    $params = $this->request->cookie();
-                    break;
-                case 'session':
-                    $params = $this->session();
-                    break;
-                default:
-                    return $this->request->only($name);
-            }
-        }
-        $result = [];
-        foreach ($name as $key) {
-            if (isset($params[$key])) {
-                $result[$key] = $this->filterValue($params[$key], $filter);
-            }
-        }
-        return $result;
+        return $this->request->only($name, $data, $filter);
     }
 
     /**
@@ -478,32 +366,7 @@ class Request implements ContractRequest
      */
     public function except(array $name, string $type = 'param'): array
     {
-        switch ($type) {
-            case 'get':
-                $params = $this->request->get();
-                break;
-            case 'post':
-                $params = $this->request->post();
-                break;
-            case 'put':
-                $params = $this->put();
-                break;
-            case 'route':
-                $params = $this->route();
-                break;
-            case 'cookie':
-                $params = $this->request->cookie();
-                break;
-            case 'session':
-                $params = $this->session();
-                break;
-            default:
-                return $this->request->except($name);
-        }
-        foreach ($name as $key) {
-            unset($params[$key]);
-        }
-        return $params;
+        return $this->request->except($name, $type);
     }
 
     /**
@@ -523,11 +386,7 @@ class Request implements ContractRequest
      */
     public function url(bool $complete = false): string
     {
-        if ($complete) {
-            $scheme = $this->isSsl() ? 'https' : 'http';
-            return $scheme . ':' . $this->request->fullUrl();
-        }
-        return $this->request->url();
+        return $this->request->url($complete);
     }
 
     /**
@@ -547,7 +406,7 @@ class Request implements ContractRequest
      */
     public function pathinfo(): string
     {
-        return $this->request->path();
+        return $this->request->pathinfo();
     }
 
     /**
@@ -555,7 +414,7 @@ class Request implements ContractRequest
      */
     public function path(): string
     {
-        return $this->request->path();
+        return $this->request->pathinfo();
     }
 
     /**
@@ -564,12 +423,7 @@ class Request implements ContractRequest
      */
     public function ext(): string
     {
-        $path = $this->request->path();
-        $pos = strrpos($path, '.');
-        if ($pos !== false) {
-            return substr($path, $pos + 1);
-        }
-        return '';
+        return $this->request->ext();
     }
 
     /**
@@ -587,7 +441,7 @@ class Request implements ContractRequest
      */
     public function getContent(): string
     {
-        return $this->request->rawBody();
+        return $this->request->input;
     }
 
     /**
