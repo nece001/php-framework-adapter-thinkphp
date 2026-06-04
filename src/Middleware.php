@@ -7,10 +7,7 @@ use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;
 
-abstract class Middleware implements ContractMiddleware, MiddlewareInterface
+abstract class Middleware implements ContractMiddleware
 {
-    public function process(Request $request, callable $handler): Response
-    {
-        return $this->handle($request, $handler);
-    }
+    
 }

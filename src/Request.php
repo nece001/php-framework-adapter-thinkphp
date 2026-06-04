@@ -3,6 +3,7 @@
 namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Request as ContractRequest;
+use Nece\Framework\Adapter\Facade\Session;
 
 class Request implements ContractRequest
 {
@@ -237,11 +238,7 @@ class Request implements ContractRequest
      */
     public function session(string $name = '', $default = null)
     {
-        $session = $this->request->session();
-        if ($name === '') {
-            return $session;
-        }
-        return $session->get($name, $default);
+        return Session::get($name, $default);
     }
 
     /**
