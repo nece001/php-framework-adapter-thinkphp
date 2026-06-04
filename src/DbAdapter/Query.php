@@ -417,7 +417,7 @@ class Query implements DbAdapterQuery
     public function find($data = null): ?Model
     {
         $result = $this->query->find($data);
-        if ($result instanceof \support\think\Model) {
+        if ($result instanceof \think\Model) {
             return new Model($result);
         }
         return $result;
@@ -450,7 +450,7 @@ class Query implements DbAdapterQuery
         // 如果是 \think\Collection，转换为 Model 实例
         if ($result instanceof \think\Collection) {
             foreach ($result as $item) {
-                if ($item instanceof \support\think\Model) {
+                if ($item instanceof \think\Model) {
                     $models[] = new Model($item);
                 } else {
                     $models[] = $item;
@@ -470,7 +470,7 @@ class Query implements DbAdapterQuery
             // 将每块数据转换为 Model 实例
             $models = [];
             foreach ($items as $item) {
-                if ($item instanceof \support\think\Model) {
+                if ($item instanceof \think\Model) {
                     $models[] = new Model($item);
                 } else {
                     $models[] = $item;
@@ -496,7 +496,7 @@ class Query implements DbAdapterQuery
 
         // 转换为 Model 实例
         foreach ($thinkPaginator->items() as $item) {
-            if ($item instanceof \support\think\Model) {
+            if ($item instanceof \think\Model) {
                 $items[] = new Model($item);
             } else {
                 $items[] = $item;

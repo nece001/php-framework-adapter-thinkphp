@@ -94,27 +94,13 @@ class Controller implements ContractController
      */
     public function stream($stream, int $code = 200, array $headers = [])
     {
-        return $this->addCookiesToResponse(new WebmanResponse($code, $headers, $stream));
     }
 
     /**
      * @inheritDoc
      */
-    protected function addCookiesToResponse(WebmanResponse $response): WebmanResponse
+    protected function addCookiesToResponse( $response)
     {
-        foreach ($this->cookies as $cookie) {
-            $response->cookie(
-                $cookie['name'],
-                $cookie['value'],
-                $cookie['expire'],
-                $cookie['path'],
-                $cookie['domain'],
-                $cookie['secure'],
-                $cookie['httpOnly']
-            );
-        }
-        // 清空已添加的cookies
-        $this->cookies = [];
         return $response;
     }
 

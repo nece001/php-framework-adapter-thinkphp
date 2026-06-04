@@ -4,13 +4,14 @@ namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Request as ContractRequest;
 use Nece\Framework\Adapter\Facade\Session;
+use think\Request as ThinkRequest;
 
 class Request implements ContractRequest
 {
     /**
      * 请求实例
      *
-     * @var \Webman\Http\Request|null
+     * @var ThinkRequest|null
      */
     private $request;
 
@@ -101,12 +102,7 @@ class Request implements ContractRequest
      */
     public function all($name = '', $filter = '')
     {
-        $params = $this->request->all();
-        $files = $this->request->file();
-        if (!empty($files)) {
-            $params = array_merge($params, $files);
-        }
-        return $this->getValue($params, $name, [], $filter);
+        return $this->request->all($name, $filter);
     }
 
     /**
@@ -516,7 +512,7 @@ class Request implements ContractRequest
      */
     public function ip(): string
     {
-        return $this->request->getRealIp();
+        return $this->request->ip();
     }
 
     /**
