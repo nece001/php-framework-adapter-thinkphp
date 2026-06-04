@@ -3,7 +3,7 @@
 namespace Nece\Framework\Adapter;
 
 use Closure;
-use Nece\Framework\Adapter\Contract\IServiceProvider;
+use Nece\Framework\Adapter\Contract\ServiceProvider as ContractServiceProvider;
 use think\Service;
 
 /**
@@ -12,7 +12,7 @@ use think\Service;
  * @author nece001@163.com
  * @create 2025-09-21 17:47:43
  */
-abstract class ServiceProvider extends Service implements IServiceProvider
+abstract class ServiceProvider extends Service implements ContractServiceProvider
 {
     /**
      * @inheritDoc

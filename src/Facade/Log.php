@@ -2,11 +2,19 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\ILog;
+use Nece\Framework\Adapter\Contract\Facade\Log as ContractFacadeLog;
 use think\facade\Log as FacadeLog;
 
-class Log extends FacadeLog implements ILog
+class Log extends FacadeLog implements ContractFacadeLog
 {
+    /**
+     * @inheritDoc
+     */
+    public static function getLogger(): LoggerInterface
+    {
+        return app('log');
+    }
+
     /**
      * 紧急情况
      *

@@ -16,7 +16,6 @@ class ThinkPhpServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->middleware->add(RequestIsJson::class);
     }
 
     public function boot() {}

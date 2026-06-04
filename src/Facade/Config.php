@@ -2,10 +2,10 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\IConfig;
+use Nece\Framework\Adapter\Contract\Facade\Config as FacadeConfig;
 use think\facade\Env;
 
-class Config  implements IConfig
+class Config  implements FacadeConfig
 {
     /**
      * @inheritDoc

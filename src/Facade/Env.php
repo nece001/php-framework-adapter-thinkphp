@@ -2,10 +2,11 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\IEnv;
+use Nece\Framework\Adapter\Contract\Facade\Env as ContractFacadeEnv;
+use Override;
 use think\facade\Env as FacadeEnv;
 
-class Env implements IEnv
+class Env implements ContractFacadeEnv
 {
     /**
      * @inheritDoc
@@ -29,5 +30,13 @@ class Env implements IEnv
     public static function set($key, $value)
     {
         FacadeEnv::set($key, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getAppEnv(): string
+    {
+        return self::get('app_env', 'dev');
     }
 }

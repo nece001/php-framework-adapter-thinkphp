@@ -2,122 +2,245 @@
 
 namespace Nece\Framework\Adapter;
 
-use app\BaseController;
-use Nece\Framework\Adapter\Contract\IController;
-use Nece\Framework\Adapter\Facade\Route;
-use Nece\Framework\Adapter\Response as AdapterResponse;
-use Nece\Gears\PagingVar;
-use think\Request;
-use think\Response;
+use Nece\Framework\Adapter\Contract\Controller as ContractController;
+use Nece\Framework\Adapter\Request;
+use Nece\Framework\Adapter\Facade\Response;
+use Nece\Framework\Adapter\Facade\Session as FacadeSession;
+use support\Response as WebmanResponse;
+use Workerman\Protocols\Http\Session;
 
-/**
- * 控制器基类
- *
- * @author nece001@163.com
- * @create 2025-10-05 13:48:11
- * 
- * @implements Request<Request>
- * @implements Response<Response>
- */
-abstract class Controller extends BaseController implements IController
+class Controller implements ContractController
 {
-    /**
-     * 分页参数名
-     *
-     * @var string
-     */
-    protected $page_var_name = 'page';
+    private  $request;
 
-    /**
-     * 每页项目数量参数名
-     *
-     * @var string
-     */
-    protected $page_size_var_name = 'page_size';
+    private $cookies = [];
 
     /**
      * 获取当前请求
      * 
      * @return Request
      */
-    public function getRequest()
+    public function request(): Request
     {
+        if (!$this->request) {
+            $this->request = new Request();
+        }
         return $this->request;
     }
 
     /**
-     * 获取分页参数
+     * @inheritDoc
+     */
+    public function response(string $body = '', int $status = 200, array $headers = [])
+    {
+        $response = Response::response($body, $status, $headers);
+        return $this->addCookiesToResponse($response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function render(string $view, $data)
+    {
+        return $this->addCookiesToResponse(Response::view($view, $data));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function redirect(string $url, int $code = 302)
+    {
+        return $this->addCookiesToResponse(Response::redirect($url, $code));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function json($data, int $code = 200, array $headers = [])
+    {
+        $response = Response::json($data);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
+        }
+        return $this->addCookiesToResponse($response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function xml($data, int $code = 200, array $headers = [])
+    {
+        $response = Response::xml($data);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
+        }
+        return $this->addCookiesToResponse($response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function download(string $file, string $name = null, array $headers = [])
+    {
+        $response = Response::download($file, $name);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
+        }
+        return $this->addCookiesToResponse($response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function stream($stream, int $code = 200, array $headers = [])
+    {
+        return $this->addCookiesToResponse(new WebmanResponse($code, $headers, $stream));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function addCookiesToResponse(WebmanResponse $response): WebmanResponse
+    {
+        foreach ($this->cookies as $cookie) {
+            $response->cookie(
+                $cookie['name'],
+                $cookie['value'],
+                $cookie['expire'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['httpOnly']
+            );
+        }
+        // 清空已添加的cookies
+        $this->cookies = [];
+        return $response;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function session(string $name = '', $default = null)
+    {
+        return FacadeSession::get($name, $default);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pullSession(string $name, $default = null)
+    {
+        $value = FacadeSession::get($name, $default);
+        FacadeSession::delete($name);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setSession(string $name, $value)
+    {
+        FacadeSession::set($name, $value);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteSession(string $name)
+    {
+        FacadeSession::delete($name);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setSessionLifeTime(int $life_time) {}
+
+    /**
+     * @inheritDoc
+     */
+    public function setCookie(string $name, string $value = '', int $expire = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httpOnly = true)
+    {
+        $this->cookies[$name] = [
+            'name' => $name,
+            'value' => $value,
+            'expire' => $expire,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httpOnly' => $httpOnly,
+        ];
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteCookie(string $name, string $path = '/', string $domain = '')
+    {
+        unset($this->cookies[$name]);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function successPagedList(Paginator $page)
+    {
+        $data = [
+            'total' => $page->total(),
+            'page' => $page->currentPage(),
+            'page_size' => $page->pageSize(),
+            'pages' => $page->lastPage(),
+            'items' => $page->all(),
+        ];
+        return $this->success($data);
+    }
+
+    /**
+     * 返回成功数据
      *
      * @author nece001@163.com
-     * @create 2025-10-07 10:20:55
+     * @create 2026-06-04 17:23:27
      *
-     * @return PagingVar
+     * @param mixed $data
+     * @return Response
      */
-    public function getPagingVar()
+    public function success($data = null)
     {
-        $page = $this->request->param($this->page_var_name, 1);
-        $page_size = $this->request->param($this->page_size_var_name, 20);
-
-        return new PagingVar($page, $page_size, $this->page_var_name, $this->page_size_var_name);
+        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data]);
     }
 
     /**
-     * 获取请求参数
+     * 返回失败数据
      *
      * @author nece001@163.com
-     * @create 2025-10-05 12:50:26
+     * @create 2026-06-04 17:23:43
      *
-     * @param string $name 参数键名
-     * @param mixed $default 默认值
-     * @param string|array|null $filter 过滤函数
-     * @return mixed
-     */
-    public function param($name = '', $default = null, string|array|null $filter = null)
-    {
-        return $this->request->param($name, $default, $filter);
-    }
-
-    /**
-     * 渲染视图
-     * 
-     * @param string $template 模板路径
-     * @param array $data 视图数据
+     * @param string $message
+     * @param string $code
+     * @param mixed $data
      * @return Response
      */
-    public function renderView(string $template, $data)
+    public function failure(string $message = 'failure', $code = '', $data = null)
     {
-        $response = new AdapterResponse($this->getRequest()->is_json_request);
-        return $response->view($template, $data);
+        return $this->json(['code' => $code, 'status' => 'failure', 'message' => $message, 'data' => $data]);
     }
 
     /**
-     * 重定向
-     * 
-     * @param string $url 重定向URL
-     * @param mixed $result 重定向结果
-     * @param int $code HTTP状态码
-     * @return Response
-     */
-    public function redirectTo(string $url, $result, int $code = 302)
-    {
-        $response = new AdapterResponse($this->getRequest()->is_json_request);
-        return $response->redirect($url, $result, $code);
-    }
-
-    /**
-     * 重定向路由
+     * 返回异常数据
      *
      * @author nece001@163.com
-     * @create 2026-02-25 11:30:19
+     * @create 2026-06-04 17:23:49
      *
-     * @param string $route_name 路由名称
-     * @param mixed $result 重定向结果
-     * @param integer $code HTTP状态码
+     * @param \Exception $e
      * @return Response
      */
-    public function redirectRoute(string $route_name, $result, int $code = 302)
+    public function exception(\Exception $e)
     {
-        $url = Route::url($route_name);
-        return $this->redirectTo($url, $result, $code);
+        return $this->failure($e->getMessage(), $e->getCode());
     }
 }

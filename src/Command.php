@@ -2,14 +2,14 @@
 
 namespace Nece\Framework\Adapter;
 
-use Nece\Framework\Adapter\Contract\ICommand;
+use Nece\Framework\Adapter\Contract\Command as ContractCommand;
 use think\console\Command as ConsoleCommand;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
 
-abstract class Command extends ConsoleCommand implements ICommand
+abstract class Command extends ConsoleCommand implements ContractCommand
 {
     /**
      * 命令的名称和签名（兼容laravel命令签名）

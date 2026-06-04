@@ -2,11 +2,11 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\IValidate;
+use Nece\Framework\Adapter\Contract\Facade\Validate as ContractFacadeValidate;
 use Nece\Framework\Adapter\Contract\Exception\ValidateException;
 use think\facade\Validate as FacadeValidate;
 
-class Validate  implements IValidate
+class Validate  implements ContractFacadeValidate
 {
     /**
      * @inheritDoc

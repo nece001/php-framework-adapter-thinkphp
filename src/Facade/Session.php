@@ -2,10 +2,10 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\ISession;
+use Nece\Framework\Adapter\Contract\Facade\Session as ContractFacadeSession;
 use think\facade\Session as FacadeSession;
 
-class Session implements ISession
+class Session implements ContractFacadeSession
 {
     /**
      * @inheritDoc

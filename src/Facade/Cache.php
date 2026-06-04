@@ -2,10 +2,10 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Facade\ICache;
+use Nece\Framework\Adapter\Contract\Facade\Cache as ContractFacadeCache;
 use think\facade\Cache as FacadeCache;
 
-class Cache extends FacadeCache implements ICache
+class Cache extends FacadeCache implements ContractFacadeCache
 {
     /**
      * @inheritDoc
