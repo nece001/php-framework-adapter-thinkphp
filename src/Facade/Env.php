@@ -3,7 +3,6 @@
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\Env as ContractFacadeEnv;
-use Override;
 use think\facade\Env as FacadeEnv;
 
 class Env implements ContractFacadeEnv

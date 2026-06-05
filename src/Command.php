@@ -4,302 +4,183 @@ namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Command as ContractCommand;
 use think\console\Command as ConsoleCommand;
-use think\console\Input;
-use think\console\input\Argument;
-use think\console\input\Option;
-use think\console\Output;
 
 abstract class Command extends ConsoleCommand implements ContractCommand
 {
     /**
-     * 命令的名称和签名（兼容laravel命令签名）
-     * mail:send
-     * {user : The ID of the user}
-     * {--Q|queue=value : Whether the job should be queued}
+     * 默认命令名称
      *
      * @var string
      */
-    protected $signature = '';
+    protected static $defaultName = '';
 
     /**
-     * 命令的描述
+     * 默认命令描述
      *
      * @var string
      */
-    protected $description = '';
-
+    protected static $defaultDescription = '';
 
     /**
-     * 配置命令
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 23:24:51
-     *
-     * @return void
+     * @var InputInterface
      */
-    protected function configure()
+    protected $input;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    public function __construct()
     {
-        $this->setDescription($this->description);
 
-        $patt = '/([^{}\s]+|{[^{}]+})/';
-        if (preg_match_all($patt, $this->signature, $matches)) {
-            foreach ($matches[1] as $str) {
-                if (0 === strpos($str, '{')) {
-                    $str = trim($str, '{}');
-
-                    if (0 === strpos($str, '--')) {
-                        // 分析选项
-                        $str = substr($str, 2);
-                        $name = '';
-                        $shot = '';
-                        $require = false;
-                        $default = null;
-                        $description = '';
-
-                        if (false !== strpos($str, ':')) {
-                            $parts = explode(':', $str);
-                            $str = trim($parts[0]);
-                            $description = trim($parts[1] ?? '');
-                        }
-
-                        if (false !== strpos($str, '|')) {
-                            $parts = explode('|', $str);
-                            $shot = $parts[0];
-                            $str = $parts[1] ?? '';
-                        }
-
-                        if (false !== strpos($str, '=')) {
-                            $parts = explode('=', $str);
-                            $name = $parts[0];
-                            $require = true;
-                            $default = $parts[1] ?? '';
-                        } else {
-                            $name = $str;
-                        }
-
-                        $this->addOption($name, $shot, $require ? Option::VALUE_REQUIRED : Option::VALUE_OPTIONAL, $description, $default);
-                    } else {
-
-                        // 分析参数
-                        $parts = explode(':', $str);
-                        $this->addArgument(trim($parts[0]), Argument::REQUIRED, trim($parts[1] ?? ''));
-                    }
-                } else {
-                    // 分析命令名称
-                    $this->setName($str);
-                }
-            }
-        }
+        $this->setName(static::$defaultName)
+            ->setDescription(static::$defaultDescription);
+        parent::__construct();
     }
 
     /**
      * 执行命令
      *
-     * @author nece001@163.com
-     * @create 2025-10-11 23:24:33
-     *
-     * @param Input $input
-     * @param Output $output
-     * @return void
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
      */
-    public function execute(Input $input, Output $output)
+    protected function execute($input, $output): int
     {
+        $this->input = $input;
+        $this->output = $output;
         $this->handle();
+        return 0;
     }
 
     /**
-     * 处理命令
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 23:24:42
-     *
-     * @return void
+     * @inheritDoc
      */
-    abstract public function handle();
-
-    /**
-     * 获取命令行参数
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:54:35
-     *
-     * @param string $name
-     * @return mixed
-     */
-    protected function argument(string $name)
+    public function argument(string $name)
     {
         return $this->input->getArgument($name);
     }
 
     /**
-     * 获取命令行选项
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:54:46
-     *
-     * @param string $name
-     * @return mixed
+     * @inheritDoc
      */
-    protected function option(string $name)
+    public function option(string $name)
     {
         return $this->input->getOption($name);
     }
 
     /**
-     * 询问用户
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:54:53
-     *
-     * @param string $question
-     * @param string $default
-     * @return mixed
+     * @inheritDoc
      */
-    protected function ask(string $question, $default = null)
+    public function ask(string $question, $default = null)
     {
-        return $this->output->ask($this->input, $question, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new Question($question, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
-     * 确认用户操作
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:04
-     *
-     * @param string $question
-     * @param boolean $default
-     * @return boolean
+     * @inheritDoc
      */
-    protected function confirm(string $question, bool $default = false)
+    public function confirm(string $question, bool $default = false): bool
     {
-        return $this->output->confirm($this->input, $question, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new ConfirmationQuestion($question, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
-     * 选择用户操作
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:19
-     *
-     * @param string $question
-     * @param array $choices
-     * @param string $default
-     * @return mixed
+     * @inheritDoc
      */
-    protected function choice(string $question, array $choices, $default = null)
+    public function choice(string $question, array $choices, $default = null)
     {
-        return $this->output->choice($this->input, $question, $choices, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new ChoiceQuestion($question, $choices, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
-     * 输出空行
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:34
-     *
-     * @param integer $count
-     * @return void
+     * @inheritDoc
      */
-    protected function newLine(int $count = 1)
+    public function newLine(int $count = 1): void
     {
-        $this->output->newLine($count);
+        for ($i = 0; $i < $count; $i++) {
+            $this->output->writeln('');
+        }
     }
 
     /**
-     * 输出消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:40
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function writeln(string $message)
+    public function writeln(string $message): void
     {
         $this->output->writeln($message);
     }
 
     /**
-     * 输出消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:46
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function write(string $message)
+    public function write(string $message): void
     {
         $this->output->write($message);
     }
 
     /**
-     * 输出信息消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:52
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function info(string $message)
+    public function info(string $message): void
     {
         $this->output->info($message);
     }
 
     /**
-     * 输出注释消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:55:58
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function comment(string $message)
+    public function comment(string $message): void
     {
         $this->output->comment($message);
     }
 
     /**
-     * 输出问题消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:56:04
-     *
-     * @param string $question
-     * @return mixed
+     * @inheritDoc
      */
-    protected function question(string $question)
+    public function question(string $question): void
     {
-        return $this->output->question($question);
+        $this->output->question($question);
     }
 
     /**
-     * 输出警告消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:56:10
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function warn(string $message)
+    public function warn(string $message): void
     {
-        $this->output->warning($message);
+        $this->output->warn($message);
     }
 
     /**
-     * 输出错误消息
-     *
-     * @author nece001@163.com
-     * @create 2025-10-11 22:56:16
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
-    protected function error(string $message)
+    public function error(string $message): void
     {
         $this->output->error($message);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addArg(string $name, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    {
+        parent::addArgument($name, $mode, $description, $default, $suggestedValues);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addOpt(string $name, ?string $shortcut = null, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    {
+        parent::addOption($name, $shortcut, $mode, $description, $default, $suggestedValues);
+        return $this;
     }
 }
