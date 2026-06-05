@@ -414,7 +414,8 @@ class Request implements ContractRequest
      */
     public function path(): string
     {
-        return $this->request->pathinfo();
+        $path_info = $this->request->pathinfo();
+        return '/' . ltrim($path_info, '/');
     }
 
     /**
