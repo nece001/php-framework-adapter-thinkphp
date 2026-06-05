@@ -3,8 +3,7 @@
 namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\UploadFile as ContractUploadFile;
-use Webman\Http\UploadFile as HttpUploadFile;
-use Webman\File;
+use think\File;
 
 class UploadFile implements ContractUploadFile
 {
@@ -14,7 +13,7 @@ class UploadFile implements ContractUploadFile
      * @author nece001@163.com
      * @create 2026-06-04 16:54:01
      *
-     * @param HttpUploadFile $file
+     * @param File $file
      * @return static
      */
     public static function instance($file): static
@@ -37,11 +36,11 @@ class UploadFile implements ContractUploadFile
     /**
      * 上传文件
      *
-     * @var HttpUploadFile
+     * @var File
      */
     private $upload_file;
 
-    public function __construct(HttpUploadFile $file)
+    public function __construct(File $file)
     {
         $this->upload_file = $file;
     }
