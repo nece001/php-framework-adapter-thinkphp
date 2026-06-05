@@ -46,4 +46,26 @@ class Session implements ContractFacadeSession
     {
         FacadeSession::delete($key);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public static function put($key, $value = null): void
+    {
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                FacadeSession::set($k, $v);
+            }
+        } else {
+            FacadeSession::set($key, $value);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function pull(string $key)
+    {
+        return FacadeSession::pull($key);
+    }
 }
