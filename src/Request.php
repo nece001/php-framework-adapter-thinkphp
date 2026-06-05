@@ -236,7 +236,7 @@ class Request implements ContractRequest
      */
     public function file(string $name = '')
     {
-        $file = $this->request->file($name ? $name : null);
+        $file = $this->request->file($name);
         if ($file) {
             if (is_array($file)) {
                 return UploadFile::instances($file);

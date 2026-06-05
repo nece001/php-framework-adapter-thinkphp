@@ -38,4 +38,12 @@ class Env implements ContractFacadeEnv
     {
         return self::get('app_env', 'dev');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getRootPath(): string
+    {
+        return rtrim(str_replace('\\', DIRECTORY_SEPARATOR, root_path()), DIRECTORY_SEPARATOR);
+    }
 }

@@ -3,10 +3,17 @@
 namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\UploadFile as ContractUploadFile;
-use think\File;
+use think\file\UploadedFile;
 
 class UploadFile implements ContractUploadFile
 {
+    /**
+     * 上传文件
+     *
+     * @var UploadedFile
+     */
+    private $upload_file;
+
     /**
      * 创建上传文件实例
      *
@@ -27,20 +34,13 @@ class UploadFile implements ContractUploadFile
     public static function instances(array $files): array
     {
         $instances = [];
-        foreach ($files as $field=>$file) {
+        foreach ($files as $field => $file) {
             $instances[$field] = new static($file);
         }
         return $instances;
     }
 
-    /**
-     * 上传文件
-     *
-     * @var File
-     */
-    private $upload_file;
-
-    public function __construct(File $file)
+    public function __construct(UploadedFile $file)
     {
         $this->upload_file = $file;
     }
@@ -50,7 +50,7 @@ class UploadFile implements ContractUploadFile
      */
     public function getUploadName(): ?string
     {
-        return $this->upload_file->getUploadName();
+        return $this->upload_file->getOriginalName();
     }
 
     /**
@@ -58,7 +58,7 @@ class UploadFile implements ContractUploadFile
      */
     public function getUploadMimeType(): ?string
     {
-        return $this->upload_file->getUploadMimeType();
+        return $this->upload_file->getOriginalMime();
     }
 
     /**
@@ -66,7 +66,7 @@ class UploadFile implements ContractUploadFile
      */
     public function getUploadExtension(): string
     {
-        return $this->upload_file->getUploadExtension();
+        return $this->upload_file->getOriginalExtension();
     }
 
     /**
@@ -74,7 +74,8 @@ class UploadFile implements ContractUploadFile
      */
     public function getUploadErrorCode(): ?int
     {
-        return $this->upload_file->getUploadErrorCode();
+        // UploadedFile 类没有直接暴露 error 属性，这里返回 null
+        return null;
     }
 
     /**
@@ -88,9 +89,13 @@ class UploadFile implements ContractUploadFile
     /**
      * @inheritDoc
      */
-    public function move(string $destination): File
+    public function move(string $destination): \think\File
     {
-        return $this->upload_file->move($destination);
+        $info = pathinfo($destination);
+        $path = $info['dirname'];
+        $filename = $info['basename'];
+
+        return $this->upload_file->move($path, $filename);
     }
 
     /**
