@@ -193,9 +193,9 @@ class Controller implements ContractController
      * @param mixed $data
      * @return Response
      */
-    public function success($data = null)
+    public function success($data = null, string $message = 'success')
     {
-        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data], 200);
+        return $this->json(['code' => 0, 'status' => 'success', 'message' => $message, 'data' => $data], 200);
     }
 
     /**
