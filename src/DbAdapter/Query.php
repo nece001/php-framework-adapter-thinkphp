@@ -484,10 +484,12 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function paginate(int $page = 1, int $page_size = 15, array $options = []): Paginator
+    public function paginate(int $page_size = 15, int $page = 1, array $options = []): Paginator
     {
+        $page_name = $options['page_name'] ?? 'page';
+
         // 使用框架提供的分页功能
-        $thinkPaginator = $this->query->paginate($page_size, false, ['page' => $page]);
+        $thinkPaginator = $this->query->paginate($page_size, false, [$page_name => $page]);
 
         // 获取分页数据
         $total = $thinkPaginator->total();
