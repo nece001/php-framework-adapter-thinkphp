@@ -6,6 +6,7 @@ use Closure;
 use Nece\Framework\Adapter\Contract\DbAdapter\Query as DbAdapterQuery;
 use Nece\Framework\Adapter\DbAdapter\Paginator;
 use think\db\Query as ThinkQuery;
+use Nece\Framework\Adapter\Contract\DbAdapter\Model as ModelInterface;
 
 class Query implements DbAdapterQuery
 {
@@ -77,24 +78,6 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function withoutField(array $field): DbAdapterQuery
-    {
-        $this->query->withoutField($field);
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function tableField(array $field, string $tableName, string $prefix = '', string $alias = ''): DbAdapterQuery
-    {
-        $this->query->tableField($field, $tableName, $prefix, $alias);
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function count(string $field = '*'): int
     {
         return $this->query->count($field);
@@ -135,36 +118,42 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function join(string $join, string $condition = null, string $type = 'INNER', array $bind = []): DbAdapterQuery
+    public function join(ModelInterface $model, string $condition = null, string $type = 'INNER', array $bind = []): DbAdapterQuery
     {
-        $this->query->join($join, $condition, $type, $bind);
+        $table = $model->getTable();
+        $alias = $model->getAlias();
+        if ($alias) {
+            $table .= ' ' . $alias;
+        }
+        $this->query->join($table, $condition, $type, $bind);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function leftJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
+    public function leftJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->leftJoin($join, $condition, $bind);
+        $table = $model->getTable();
+        $alias = $model->getAlias();
+        if ($alias) {
+            $table .= ' ' . $alias;
+        }
+        $this->query->leftJoin($table, $condition, $bind);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function rightJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
+    public function rightJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->rightJoin($join, $condition, $bind);
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fullJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
-    {
-        $this->query->fullJoin($join, $condition, $bind);
+        $table = $model->getTable();
+        $alias = $model->getAlias();
+        if ($alias) {
+            $table .= ' ' . $alias;
+        }
+        $this->query->rightJoin($table, $condition, $bind);
         return $this;
     }
 
@@ -405,9 +394,9 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function page(int $page, int $listRows = null): DbAdapterQuery
+    public function page(int $page, int $page_size = null): DbAdapterQuery
     {
-        $this->query->page($page, $listRows);
+        $this->query->page($page, $page_size);
         return $this;
     }
 
