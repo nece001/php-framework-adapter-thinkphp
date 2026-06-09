@@ -21,11 +21,11 @@ class Route implements RouteContract
                 foreach ($methods as $method) {
                     $path = $prefix . '/' . ltrim($method['path'], '/');
                     $action = $method['action'];
-                    $method = $method['method'] ?? 'get';
                     $name = $method['name'] ?? '';
                     $match = $method['match'] ?? false;
-
-                    $rounte = ThinkRoute::rule($path, [$controller_class, $action], $method);
+                    $mtd = $method['method'] ?? 'get';
+                    
+                    $rounte = ThinkRoute::rule($path, [$controller_class, $action], $mtd);
                     if ($name) {
                         $rounte->name($name);
                     }
