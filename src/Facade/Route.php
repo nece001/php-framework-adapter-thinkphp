@@ -24,7 +24,7 @@ class Route implements RouteContract
                     $name = $method['name'] ?? '';
                     $match = $method['match'] ?? false;
                     $mtd = $method['method'] ?? 'get';
-                    
+
                     $rounte = ThinkRoute::rule($path, [$controller_class, $action], $mtd);
                     if ($name) {
                         $rounte->name($name);
@@ -39,6 +39,9 @@ class Route implements RouteContract
 
     public static function url(string $name, array $params = []): string
     {
-        return url($name, $params);
+        $url = url($name, $params);
+
+        // 把编码后的{}还原
+        return str_replace(['%7B', '%7D'], ['{', '}'], $url);
     }
 }
