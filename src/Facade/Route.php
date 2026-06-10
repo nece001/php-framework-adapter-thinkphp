@@ -9,6 +9,8 @@ class Route implements RouteContract
 {
     public static function addRules(array $rules): void
     {
+        $admin_base_path = Env::get('admin_base_path', '/admin');
+
         foreach ($rules as $rule) {
             $group = $rule['group'];
             $controllers = $rule['controllers'];
