@@ -69,4 +69,17 @@ class Response implements ResponseContract
     {
         return \abort(404);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public static function buildData($code, $status, $message, $data = [])
+    {
+        return [
+            'code' => $code,
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ];
+    }
 }
