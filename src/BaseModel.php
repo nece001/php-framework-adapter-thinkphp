@@ -6,6 +6,8 @@ use think\Model;
 
 class BaseModel extends Model
 {
+    protected $type = [];
+
     protected function init()
     {
         if (isset($this->casts)) {
