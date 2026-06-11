@@ -442,7 +442,7 @@ class Request implements ContractRequest
      */
     public function getContent(): string
     {
-        return $this->request->input;
+        return $this->request->getContent();
     }
 
     /**
