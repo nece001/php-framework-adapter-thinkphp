@@ -17,31 +17,31 @@ class Response implements ResponseContract
     /**
      * @inheritDoc
      */
-    public static function json($data, int $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
+    public static function json($data, int $status = 200, array $headers = [], array $options = [])
     {
-        return \json($data);
+        return \json($data, $status, $headers, $options);
     }
 
     /**
      * @inheritDoc
      */
-    public static function xml($xml)
+    public static function xml($xml, int $status = 200, array $headers = [], array $options = [])
     {
-        return \xml($xml);
+        return \xml($xml, $status, $headers, $options);
     }
 
     /**
      * @inheritDoc
      */
-    public static function jsonp($data, string $callback_name = 'callback')
+    public static function jsonp($data, int $status = 200, array $headers = [], array $options = [])
     {
-        return \jsonp($data);
+        return \jsonp($data, $status, $headers, $options);
     }
 
     /**
      * @inheritDoc
      */
-    public static function redirect(string $location, int $status = 302, array $headers = [])
+    public static function redirect(string $location, int $status = 302)
     {
         return \redirect($location, $status);
     }
@@ -49,17 +49,17 @@ class Response implements ResponseContract
     /**
      * @inheritDoc
      */
-    public static function view(mixed $template = null, array $vars = [], ?string $app = null, ?string $plugin = null)
+    public static function view(mixed $template = null, array $vars = [], int $status = 200)
     {
-        return \view($template, $vars);
+        return \view($template, $vars, $status);
     }
 
     /**
      * @inheritDoc
      */
-    public static function download(string $file_path, ?string $filename = null)
+    public static function download(string $filename, string $name='', bool $content = false, int $expire = 180)
     {
-        return \download($file_path, $filename ?? '');
+        return \download($filename, $name, $content, $expire);
     }
 
     /**
